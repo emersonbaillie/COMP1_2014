@@ -135,6 +135,10 @@ def GetPlayerName():
     PlayerName = input('Please enter your name (No numbers or symbols): ')
     print()
     ValidName = PlayerName.isalpha()
+    if ValidName == False:
+      print()
+      print("This is not a valid name")
+      print()
   return PlayerName
 
 def GetChoiceFromUser():
