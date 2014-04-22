@@ -75,6 +75,7 @@ def DisplayMenu():
   print('2. Play game (without shuffle)')
   print('3. Display recent scores')
   print('4. Reset recent scores')
+  print("5. Options")
   print()
   print('Select an option from the menu (or enter q to quit): ', end='')
 
@@ -248,6 +249,32 @@ def Date():
   Date = ("{0}-{1}-{2}".format(Day,Month,Year))
   return Date
 
+def Options():
+  DisplayOptionMenu()
+  OptionChoice = GetOptionMenuChoice()
+  SetAce()
+
+def DisplayOptionMenu():
+  print("OPTION MENU")
+  print()
+  print("1. Set Ace to be HIGH or LOW")
+  print()
+
+def GetOptionMenuChoice():
+  OptionChoice = int(input("Select an option from the menu (Enter 'q' to quit): "))
+  print()
+  
+
+def SetAce():
+  AceOption = input("Do you wish the ace to be (H)igh or (L)ow: ")
+  AceOption = AceOption[0].upper
+  if AceOption == "h":
+    AceOption = 14
+  else:
+    AceOption = 1
+  return AceOption
+  
+  
 if __name__ == '__main__':
   Date = Date()
   for Count in range(1, 53):
@@ -269,3 +296,5 @@ if __name__ == '__main__':
       DisplayRecentScores(RecentScores)
     elif Choice == '4':
       ResetRecentScores(RecentScores)
+    elif Choice == "5":
+      Options()
