@@ -18,12 +18,13 @@ class TCard():
 class TRecentScore():
   def __init__(self):
     self.Name = ''
-    self.Score = 0
+    self.Score = ""
     self.Date = ""
 
 Deck = [None]
 RecentScores = [None]
 Choice = ''
+
 
 def GetRank(RankNo):
   Rank = ''
@@ -53,6 +54,8 @@ def GetRank(RankNo):
     Rank = 'Queen'
   elif RankNo == 13:
     Rank = 'King'
+  elif RankNo == 14:
+    Rank = "Ace"
   return Rank
 
 def GetSuit(SuitNo):
@@ -82,10 +85,11 @@ def DisplayMenu():
 def GetMenuChoice():
   Choice = input()
   print()
-  Choice = Choice[0].lower()
+  Choice = Choice.lower()
   return Choice
 
-def LoadDeck(Deck):
+def LoadDeck(Deck,AceOption):
+  print(AceOption)
   CurrentFile = open('deck.txt', 'r')
   Count = 1
   while True:
@@ -96,6 +100,8 @@ def LoadDeck(Deck):
     Deck[Count].Suit = int(LineFromFile)
     LineFromFile = CurrentFile.readline()
     Deck[Count].Rank = int(LineFromFile)
+    if Deck[Count].Rank == 1 and AceOption == True:
+      Deck[Count].Rank = 14
     Count = Count + 1
  
 def ShuffleDeck(Deck):
@@ -249,29 +255,28 @@ def Date():
   Date = ("{0}-{1}-{2}".format(Day,Month,Year))
   return Date
 
-def Options():
-  DisplayOptionMenu()
-  OptionChoice = GetOptionMenuChoice()
-  SetAce()
-
+  
 def DisplayOptionMenu():
   print("OPTION MENU")
   print()
   print("1. Set Ace to be HIGH or LOW")
   print()
 
+
 def GetOptionMenuChoice():
   OptionChoice = int(input("Select an option from the menu (Enter 'q' to quit): "))
-  print()
+  return OptionChoice
+  
   
 
 def SetAce():
-  AceOption = input("Do you wish the ace to be (H)igh or (L)ow: ")
-  AceOption = AceOption[0].upper
+  print()
+  AceOption = input("Do you wish the Ace to be (h)igh or (l)ow: ")
+  AceOption = AceOption[0].lower()
   if AceOption == "h":
-    AceOption = 14
-  else:
-    AceOption = 1
+    AceOption = True
+  elif AceOption == "l":
+    AceOption = False
   return AceOption
   
   
@@ -282,19 +287,24 @@ if __name__ == '__main__':
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     RecentScores.append(TRecentScore())
   Choice = ''
+  AceOption = False
   while Choice != 'q':
     DisplayMenu()
     Choice = GetMenuChoice()
     if Choice == '1':
-      LoadDeck(Deck)
+      LoadDeck(Deck,AceOption)
       ShuffleDeck(Deck)
       PlayGame(Deck, RecentScores)
     elif Choice == '2':
-      LoadDeck(Deck)
+      LoadDeck(Deck,AceOption)
       PlayGame(Deck, RecentScores)
     elif Choice == '3':
       DisplayRecentScores(RecentScores)
     elif Choice == '4':
       ResetRecentScores(RecentScores)
     elif Choice == "5":
-      Options()
+      DisplayOptionMenu()
+      OptionChoice = GetOptionMenuChoice()
+      if OptionChoice == 1:
+        AceOption = SetAce()
+        print(AceOption)
