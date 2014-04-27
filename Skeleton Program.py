@@ -18,7 +18,7 @@ class TCard():
 class TRecentScore():
   def __init__(self):
     self.Name = ''
-    self.Score = ""
+    self.Score = 0
     self.Date = ""
 
 Deck = [None]
@@ -89,7 +89,6 @@ def GetMenuChoice():
   return Choice
 
 def LoadDeck(Deck,AceOption):
-  print(AceOption)
   CurrentFile = open('deck.txt', 'r')
   Count = 1
   while True:
@@ -104,6 +103,7 @@ def LoadDeck(Deck,AceOption):
       Deck[Count].Rank = 14
     Count = Count + 1
  
+
 def ShuffleDeck(Deck):
   SwapSpace = TCard()
   NoOfSwaps = 1000
@@ -176,6 +176,7 @@ def ResetRecentScores(RecentScores):
     RecentScores[Count].Date = ""
 
 def DisplayRecentScores(RecentScores):
+  BubbleSortScores(RecentScores)
   print()
   print('Recent Scores: ')
   print()
@@ -266,8 +267,6 @@ def DisplayOptionMenu():
 def GetOptionMenuChoice():
   OptionChoice = int(input("Select an option from the menu (Enter 'q' to quit): "))
   return OptionChoice
-  
-  
 
 def SetAce():
   print()
@@ -279,7 +278,41 @@ def SetAce():
     AceOption = False
   return AceOption
   
-  
+def BubbleSortScores(RecentScores):
+  length = len(RecentScores)
+  sorted = False
+  while not sorted:
+      sorted = True
+      for Count in range(length):
+        if RecentScores[2].Score > RecentScores[1].Score:
+          sorted = False
+          Temp = RecentScores[1].Score
+          RecentScores[1].Score = RecentScores[2].Score
+          RecentScores[2].Score = Temp
+
+          Temp = RecentScores[1].Name
+          RecentScores[1].Name = RecentScores[2].Name
+          RecentScores[2].Name = Temp
+
+          Temp = RecentScores[1].Date
+          RecentScores[1].Date = RecentScores[2].Date
+          RecentScores[2].Date = Temp
+
+        if RecentScores[3].Score > RecentScores[2].Score:
+          sorted = False
+          Temp = RecentScores[2].Score
+          RecentScores[2].Score = RecentScores[3].Score
+          RecentScores[3].Score = Temp
+
+          Temp = RecentScores[1].Name
+          RecentScores[1].Name = RecentScores[2].Name
+          RecentScores[2].Name = Temp
+
+          Temp = RecentScores[1].Date
+          RecentScores[1].Date = RecentScores[2].Date
+          RecentScores[2].Date = Temp
+          
+
 if __name__ == '__main__':
   Date = Date()
   for Count in range(1, 53):
@@ -307,4 +340,3 @@ if __name__ == '__main__':
       OptionChoice = GetOptionMenuChoice()
       if OptionChoice == 1:
         AceOption = SetAce()
-        print(AceOption)
