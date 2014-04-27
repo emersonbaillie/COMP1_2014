@@ -192,7 +192,6 @@ def DisplayRecentScores(RecentScores):
 def UpdateRecentScores(RecentScores, Score, Date):
   SaveScore = input("Do you wish to save your score? (Y/N):")
   SaveScore = SaveScore[0].upper()
-
   if SaveScore == "Y":
     PlayerName = GetPlayerName()
     print("Score Saved")
@@ -221,6 +220,14 @@ def UpdateRecentScores(RecentScores, Score, Date):
     print()
     UpdateRecentScores(RecentScores, Score, Date)
 
+def TestScores(RecentScores):
+  Score = 20
+  for Count in range(1,NO_OF_RECENT_SCORES+1):
+    Score = Score + 1
+    RecentScores[Count].Name = "Test"
+    RecentScores[Count].Score = Score
+    RecentScores[Count].Date = "Test"
+    
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
   NextCard = TCard()
@@ -279,39 +286,24 @@ def SetAce():
   return AceOption
   
 def BubbleSortScores(RecentScores):
-  length = len(RecentScores)
   sorted = False
   while not sorted:
-      sorted = True
-      for Count in range(length):
-        if RecentScores[2].Score > RecentScores[1].Score:
-          sorted = False
-          Temp = RecentScores[1].Score
-          RecentScores[1].Score = RecentScores[2].Score
-          RecentScores[2].Score = Temp
+    sorted = True
+    for count in range(1,NO_OF_RECENT_SCORES):
+      if RecentScores[count].Score < RecentScores[count + 1].Score:
+        sorted = False
+        Temp = RecentScores[count + 1].Score
+        RecentScores[count + 1].Score = RecentScores[count].Score
+        RecentScores[count].Score = Temp
 
-          Temp = RecentScores[1].Name
-          RecentScores[1].Name = RecentScores[2].Name
-          RecentScores[2].Name = Temp
+        Temp = RecentScores[count + 1].Name
+        RecentScores[count + 1].Name = RecentScores[count].Name
+        RecentScores[count].Name = Temp
 
-          Temp = RecentScores[1].Date
-          RecentScores[1].Date = RecentScores[2].Date
-          RecentScores[2].Date = Temp
+        Temp = RecentScores[count + 1].Date
+        RecentScores[count + 1].Date = RecentScores[count].Date
+        RecentScores[count].Date = Temp
 
-        if RecentScores[3].Score > RecentScores[2].Score:
-          sorted = False
-          Temp = RecentScores[2].Score
-          RecentScores[2].Score = RecentScores[3].Score
-          RecentScores[3].Score = Temp
-
-          Temp = RecentScores[1].Name
-          RecentScores[1].Name = RecentScores[2].Name
-          RecentScores[2].Name = Temp
-
-          Temp = RecentScores[1].Date
-          RecentScores[1].Date = RecentScores[2].Date
-          RecentScores[2].Date = Temp
-          
 
 if __name__ == '__main__':
   Date = Date()
@@ -340,3 +332,5 @@ if __name__ == '__main__':
       OptionChoice = GetOptionMenuChoice()
       if OptionChoice == 1:
         AceOption = SetAce()
+    elif Choice == "20":
+      TestScores(RecentScores)
