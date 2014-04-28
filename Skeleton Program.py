@@ -8,7 +8,8 @@
 import random
 import datetime
 
-NO_OF_RECENT_SCORES = 3
+
+NO_OF_RECENT_SCORES = 10
 
 class TCard():
   def __init__(self):
@@ -223,7 +224,8 @@ def UpdateRecentScores(RecentScores, Score, Date):
     UpdateRecentScores(RecentScores, Score, Date)
 
 def TestScores(RecentScores):
-  Score = 20
+  Score = 1
+
   for Count in range(1,NO_OF_RECENT_SCORES+1):
     Score = Score + 1
     RecentScores[Count].Name = "Test"
@@ -239,15 +241,22 @@ def SaveScores(RecentScores):
       my_file.write(Name+("\n"))
       my_file.write(Score+("\n"))
       my_file.write(Date+("\n"))
+    print()
+    print("Scores Saved")
       
 def LoadScores():
   with open("save_scores.txt",mode="r",encoding="utf-8")as my_file:
-    for line in my_file:
-      RecentScores[Count].Name = line.rstrip("\n")
-      RecentScores[Count].Score = line.rstrip("\n")
-      RecentScores[Count].Date = line.rstrip("\n")
-      print("{0}{1}{2}".format(RecentScores[Count].Name,RecentScores[Count].Score,RecentScores[Count].Date))
-
+    for Count in range(1,NO_OF_RECENT_SCORES+1):
+      Name = my_file.readline()
+      Score = my_file.readline()
+      Date = my_file.readline()
+      Name = Name.rstrip("\n")
+      Score = Score.rstrip("\n")
+      Score = int(Score)
+      Date = Date.rstrip("\n")
+      RecentScores[Count].Name = Name
+      RecentScores[Count].Score = Score
+      RecentScores[Count].Date = Date
 
 
 def PlayGame(Deck, RecentScores):
@@ -333,6 +342,13 @@ if __name__ == '__main__':
     Deck.append(TCard())
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     RecentScores.append(TRecentScore())
+  try:
+    LoadScores()
+  except FileNotFoundError:
+    print()
+    print("save_scores.txt not found. New file being created.")
+    print()
+    SaveScores(RecentScores)
   Choice = ''
   AceOption = False
   while Choice != 'q':
