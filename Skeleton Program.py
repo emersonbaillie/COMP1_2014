@@ -26,6 +26,7 @@ RecentScores = [None]
 Choice = ''
 
 
+
 def GetRank(RankNo):
   Rank = ''
   if RankNo == 1:
@@ -79,6 +80,7 @@ def DisplayMenu():
   print('3. Display recent scores')
   print('4. Reset recent scores')
   print("5. Options")
+  print("6. Save high scores")
   print()
   print('Select an option from the menu (or enter q to quit): ', end='')
 
@@ -227,7 +229,27 @@ def TestScores(RecentScores):
     RecentScores[Count].Name = "Test"
     RecentScores[Count].Score = Score
     RecentScores[Count].Date = "Test"
-    
+
+def SaveScores(RecentScores):
+  with open("save_scores.txt",mode="w",encoding="utf-8")as my_file:
+    for Count in range(1,NO_OF_RECENT_SCORES+1):
+      Name = RecentScores[Count].Name
+      Score = ("{0}".format(RecentScores[Count].Score))
+      Date = RecentScores[Count].Date
+      my_file.write(Name+("\n"))
+      my_file.write(Score+("\n"))
+      my_file.write(Date+("\n"))
+      
+def LoadScores():
+  with open("save_scores.txt",mode="r",encoding="utf-8")as my_file:
+    for line in my_file:
+      RecentScores[Count].Name = line.rstrip("\n")
+      RecentScores[Count].Score = line.rstrip("\n")
+      RecentScores[Count].Date = line.rstrip("\n")
+      print("{0}{1}{2}".format(RecentScores[Count].Name,RecentScores[Count].Score,RecentScores[Count].Date))
+
+
+
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
   NextCard = TCard()
@@ -332,5 +354,7 @@ if __name__ == '__main__':
       OptionChoice = GetOptionMenuChoice()
       if OptionChoice == 1:
         AceOption = SetAce()
+    elif Choice == "6":
+      SaveScores(RecentScores)
     elif Choice == "20":
       TestScores(RecentScores)
