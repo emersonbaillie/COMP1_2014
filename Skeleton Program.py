@@ -102,7 +102,7 @@ def LoadDeck(Deck,AceOption):
     Deck[Count].Suit = int(LineFromFile)
     LineFromFile = CurrentFile.readline()
     Deck[Count].Rank = int(LineFromFile)
-    if Deck[Count].Rank == 1 and AceOption == True:
+    if Deck[Count].Rank == 1 and AceOption == True: #Task 6
       Deck[Count].Rank = 14
     Count = Count + 1
  
@@ -134,7 +134,7 @@ def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
   Deck[52 - NoOfCardsTurnedOver].Suit = 0
   Deck[52 - NoOfCardsTurnedOver].Rank = 0
 
-def IsNextCardHigher(LastCard, NextCard):
+def IsNextCardHigher(LastCard, NextCard, SameCard):
   Higher = False
   if NextCard.Rank > LastCard.Rank:
     Higher = True
@@ -228,9 +228,10 @@ def TestScores(RecentScores):
 
   for Count in range(1,NO_OF_RECENT_SCORES+1):
     Score = Score + 1
-    RecentScores[Count].Name = "Test"
+    RecentScores[Count].Name = "{0}{1}".format(Score,"Test")
     RecentScores[Count].Score = Score
-    RecentScores[Count].Date = "Test"
+    RecentScores[Count].Date = "{0}{1}".format(Score,"Test")
+    print("{0:<15}{1:<15}{2}".format(RecentScores[Count].Name,RecentScores[Count].Score,RecentScores[Count].Date))
 
 def SaveScores(RecentScores):
   with open("save_scores.txt",mode="w",encoding="utf-8")as my_file:
@@ -259,10 +260,11 @@ def LoadScores():
       RecentScores[Count].Date = Date
 
 
-def PlayGame(Deck, RecentScores):
+def PlayGame(Deck, RecentScores, SameCard):
   LastCard = TCard()
   NextCard = TCard()
   GameOver = False
+  PointsLost = 0
   GetCard(LastCard, Deck, 0)
   DisplayCard(LastCard)
   NoOfCardsTurnedOver = 1
@@ -273,20 +275,27 @@ def PlayGame(Deck, RecentScores):
       Choice = GetChoiceFromUser()
     DisplayCard(NextCard)
     NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
-    Higher = IsNextCardHigher(LastCard, NextCard)
-    if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
-      DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
+    Higher = IsNextCardHigher(LastCard, NextCard, SameCard)
+    if (not Higher and SameCard != True):
+      print()
+      print("Cards match, no points awarded")
+      print()
+      LastCard.Rank = NextCard.Rank
+      LastCard.Suit = NextCard.Suit
+      PointsLost = PointsLost + 1     
+    elif (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
+      DisplayCorrectGuessMessage((NoOfCardsTurnedOver - 1) - PointsLost)
       LastCard.Rank = NextCard.Rank
       LastCard.Suit = NextCard.Suit
     else:
       GameOver = True
   if GameOver:
-    DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2)
+    DisplayEndOfGameMessage((NoOfCardsTurnedOver - 2) - PointsLost)
     UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2, Date)
   else:
     DisplayEndOfGameMessage(51)
     UpdateRecentScores(RecentScores, 51, Date)
-
+  return PointsLost
 def Date():
   Day = datetime.datetime.now().strftime("%d")
   Month = datetime.datetime.now().strftime("%m")
@@ -299,6 +308,7 @@ def DisplayOptionMenu():
   print("OPTION MENU")
   print()
   print("1. Set Ace to be HIGH or LOW")
+  print("2. Card of same sort ends game")
   print()
 
 
@@ -315,6 +325,15 @@ def SetAce():
   elif AceOption == "l":
     AceOption = False
   return AceOption
+
+def SetSameScore():
+  SameCard = input("Do you wish two cards having the same face to end the game? (y/n): ")
+  SameCard = SameCard = SameCard[0].lower()
+  if SameCard == "y":
+    SameCard = True
+  elif SameCard == "n":
+    SameCard = False
+  return SameCard
   
 def BubbleSortScores(RecentScores):
   sorted = False
@@ -323,17 +342,17 @@ def BubbleSortScores(RecentScores):
     for count in range(1,NO_OF_RECENT_SCORES):
       if RecentScores[count].Score < RecentScores[count + 1].Score:
         sorted = False
-        Temp = RecentScores[count + 1].Score
-        RecentScores[count + 1].Score = RecentScores[count].Score
-        RecentScores[count].Score = Temp
+        Temp = RecentScores[count + 1]
+        RecentScores[count + 1] = RecentScores[count]
+        RecentScores[count] = Temp
 
-        Temp = RecentScores[count + 1].Name
-        RecentScores[count + 1].Name = RecentScores[count].Name
-        RecentScores[count].Name = Temp
+    #    Temp = RecentScores[count + 1].Name
+   #     RecentScores[count + 1].Name = RecentScores[count].Name
+   #     RecentScores[count].Name = Temp
 
-        Temp = RecentScores[count + 1].Date
-        RecentScores[count + 1].Date = RecentScores[count].Date
-        RecentScores[count].Date = Temp
+   #     Temp = RecentScores[count + 1].Date
+  #      RecentScores[count + 1].Date = RecentScores[count].Date
+  #      RecentScores[count].Date = Temp
 
 
 if __name__ == '__main__':
@@ -351,16 +370,17 @@ if __name__ == '__main__':
     SaveScores(RecentScores)
   Choice = ''
   AceOption = False
+  SameCard = False
   while Choice != 'q':
     DisplayMenu()
     Choice = GetMenuChoice()
     if Choice == '1':
       LoadDeck(Deck,AceOption)
       ShuffleDeck(Deck)
-      PlayGame(Deck, RecentScores)
+      PlayGame(Deck, RecentScores, SameCard)
     elif Choice == '2':
       LoadDeck(Deck,AceOption)
-      PlayGame(Deck, RecentScores)
+      PlayGame(Deck, RecentScores, SameCard)
     elif Choice == '3':
       DisplayRecentScores(RecentScores)
     elif Choice == '4':
@@ -370,6 +390,8 @@ if __name__ == '__main__':
       OptionChoice = GetOptionMenuChoice()
       if OptionChoice == 1:
         AceOption = SetAce()
+      elif OptionChoice == 2:
+        SetSameScore()
     elif Choice == "6":
       SaveScores(RecentScores)
     elif Choice == "20":
