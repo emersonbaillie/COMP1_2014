@@ -138,6 +138,8 @@ def IsNextCardHigher(LastCard, NextCard, SameCard):
   Higher = False
   if NextCard.Rank > LastCard.Rank:
     Higher = True
+##  elif NextCard.Rank == LastCard.Rank and SameCard != True:
+##    CardsMatch = True
   return Higher
 
 def GetPlayerName():
@@ -261,6 +263,7 @@ def LoadScores():
 
 
 def PlayGame(Deck, RecentScores, SameCard):
+  print(SameCard)
   LastCard = TCard()
   NextCard = TCard()
   GameOver = False
@@ -275,27 +278,27 @@ def PlayGame(Deck, RecentScores, SameCard):
       Choice = GetChoiceFromUser()
     DisplayCard(NextCard)
     NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
-    Higher = IsNextCardHigher(LastCard, NextCard, SameCard)
-    if (not Higher and SameCard != True):
-      print()
-      print("Cards match, no points awarded")
-      print()
+    Higher = IsNextCardHigher(LastCard, NextCard, SameCard)  
+    if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
+      DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
       LastCard.Rank = NextCard.Rank
       LastCard.Suit = NextCard.Suit
-      PointsLost = PointsLost + 1     
-    elif (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
-      DisplayCorrectGuessMessage((NoOfCardsTurnedOver - 1) - PointsLost)
-      LastCard.Rank = NextCard.Rank
-      LastCard.Suit = NextCard.Suit
+##    elif ( and Choice == "y"):
+##      print()
+##      print("Cards match, no points awarded")
+##      print()
+##      LastCard.Rank = NextCard.Rank
+##      LastCard.Suit = NextCard.Suit
+##      PointsLost = PointsLost + 1 
     else:
       GameOver = True
   if GameOver:
-    DisplayEndOfGameMessage((NoOfCardsTurnedOver - 2) - PointsLost)
+    DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2)
     UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2, Date)
   else:
     DisplayEndOfGameMessage(51)
     UpdateRecentScores(RecentScores, 51, Date)
-  return PointsLost
+
 def Date():
   Day = datetime.datetime.now().strftime("%d")
   Month = datetime.datetime.now().strftime("%m")
@@ -346,14 +349,6 @@ def BubbleSortScores(RecentScores):
         RecentScores[count + 1] = RecentScores[count]
         RecentScores[count] = Temp
 
-    #    Temp = RecentScores[count + 1].Name
-   #     RecentScores[count + 1].Name = RecentScores[count].Name
-   #     RecentScores[count].Name = Temp
-
-   #     Temp = RecentScores[count + 1].Date
-  #      RecentScores[count + 1].Date = RecentScores[count].Date
-  #      RecentScores[count].Date = Temp
-
 
 if __name__ == '__main__':
   Date = Date()
@@ -363,7 +358,7 @@ if __name__ == '__main__':
     RecentScores.append(TRecentScore())
   try:
     LoadScores()
-  except FileNotFoundError:
+  except IOError:
     print()
     print("save_scores.txt not found. New file being created.")
     print()
