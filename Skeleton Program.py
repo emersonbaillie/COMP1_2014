@@ -229,11 +229,10 @@ def TestScores(RecentScores):
   Score = 1
 
   for Count in range(1,NO_OF_RECENT_SCORES+1):
-    Score = Score + 1
-    RecentScores[Count].Name = "{0}{1}".format(Score,"Test")
+    Score = random.randint(0,51)
+    RecentScores[Count].Name = "{0}".format("Test")
     RecentScores[Count].Score = Score
-    RecentScores[Count].Date = "{0}{1}".format(Score,"Test")
-    print("{0:<15}{1:<15}{2}".format(RecentScores[Count].Name,RecentScores[Count].Score,RecentScores[Count].Date))
+    RecentScores[Count].Date = "{0}".format("Test")
 
 def SaveScores(RecentScores):
   with open("save_scores.txt",mode="w",encoding="utf-8")as my_file:
