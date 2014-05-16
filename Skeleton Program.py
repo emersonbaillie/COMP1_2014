@@ -295,6 +295,22 @@ def PlayGame(Deck, RecentScores, SameCard):
     DisplayEndOfGameMessage(51)
     UpdateRecentScores(RecentScores, 51, Date)
 
+def SaveCurrentGame(Deck, LastCard, NextCard, Score, NoOfCardsTurnedOver):
+  with open("deck.txt",mode"w",encoding"utf-8")as deck_file:
+    Rank = ThisCard.Rank = Deck[1].Rank
+    Suit = ThisCard.Suit = Deck[1].Suit
+    deck_file.write(Rank+("\n"))
+    deck_file.write(Suit+("\n"))
+    for Count in range(1, 52 - NoOfCardsTurnedOver):
+      Deck[Count].Rank = Deck[Count + 1].Rank
+      Deck[Count].Suit = Deck[Count + 1].Suit
+      deck_file.write(Rank+("\n"))
+      deck_file.write(Suit+("\n"))
+##    deck_file.write(LastCard.Rank+("\n"))              NEEDS TO BE IN A .DAT FILE
+##    deck_file.write(NextCard.Rank+("\n"))
+##    deck_file.write(Score+("\n"))
+##    deck_file.write(NoOfCardsTurnedOver+("\n"))
+      
 def Date():
   Day = datetime.datetime.now().strftime("%d")
   Month = datetime.datetime.now().strftime("%m")
