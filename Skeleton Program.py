@@ -134,12 +134,10 @@ def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
   Deck[52 - NoOfCardsTurnedOver].Suit = 0
   Deck[52 - NoOfCardsTurnedOver].Rank = 0
 
-def IsNextCardHigher(LastCard, NextCard, SameCard):
+def IsNextCardHigher(LastCard, NextCard):
   Higher = False
   if NextCard.Rank > LastCard.Rank:
     Higher = True
-##  elif NextCard.Rank == LastCard.Rank and SameCard != True:
-##    CardsMatch = True
   return Higher
 
 def GetPlayerName():
@@ -262,7 +260,6 @@ def LoadScores():
 
 
 def PlayGame(Deck, RecentScores, SameCard):
-  print(SameCard)
   LastCard = TCard()
   NextCard = TCard()
   GameOver = False
@@ -277,23 +274,23 @@ def PlayGame(Deck, RecentScores, SameCard):
       Choice = GetChoiceFromUser()
     DisplayCard(NextCard)
     NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
-    Higher = IsNextCardHigher(LastCard, NextCard, SameCard)  
+    Higher = IsNextCardHigher(LastCard, NextCard)  
     if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
-      DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
+      DisplayCorrectGuessMessage(NoOfCardsTurnedOver - (1+PointsLost))
       LastCard.Rank = NextCard.Rank
       LastCard.Suit = NextCard.Suit
-##    elif ( and Choice == "y"):
-##      print()
-##      print("Cards match, no points awarded")
-##      print()
-##      LastCard.Rank = NextCard.Rank
-##      LastCard.Suit = NextCard.Suit
-##      PointsLost = PointsLost + 1 
+    elif (not Higher and SameCard == False) and (LastCard.Rank == NextCard.Rank):
+      print()
+      print("Cards match, no points awarded")
+      print()
+      LastCard.Rank = NextCard.Rank
+      LastCard.Suit = NextCard.Suit
+      PointsLost = PointsLost + 1 
     else:
       GameOver = True
   if GameOver:
-    DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2)
-    UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2, Date)
+    DisplayEndOfGameMessage(NoOfCardsTurnedOver - (2+PointsLost))
+    UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - (2+PointsLost), Date)
   else:
     DisplayEndOfGameMessage(51)
     UpdateRecentScores(RecentScores, 51, Date)
